@@ -6,7 +6,7 @@ function App() {
   const [count, setCount] = useState(0);
   const [history, setHistory] = useState([]);
 
-  // Load history on mount
+  // Load history from localStorage
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("history"));
     if (saved) setHistory(saved);
@@ -17,10 +17,16 @@ function App() {
     localStorage.setItem("history", JSON.stringify(history));
   }, [history]);
 
-  // Update count and history
+  // Update count + add timestamp
   const updateCount = (newValue) => {
     setCount(newValue);
-    setHistory([...history, newValue]);
+
+    const newEntry = {
+      value: newValue,
+      time: new Date().toLocaleTimeString(),
+    };
+
+    setHistory([...history, newEntry]);
   };
 
   // Clear history
@@ -36,7 +42,12 @@ function App() {
       </h1>
 
       <Counter count={count} updateCount={updateCount} />
-      <History history={history} clearHistory={clearHistory} />
+
+      <History
+        history={history}
+        currentCount={count}
+        clearHistory={clearHistory}
+      />
 
     </div>
   );
